@@ -6,7 +6,7 @@ package PgSQL;
 # the GNU General Public License version 2 (or later)
 # or the Artistic License, as specified in the Perl README file.
 #
-# $Id: PgSQL.pm,v 1.4 1998/08/15 12:30:57 goran Exp $
+# $Id: PgSQL.pm,v 1.5 1998/08/15 15:08:39 goran Exp $
 
 use strict;
 
@@ -17,7 +17,7 @@ use IO::Select;
 
 use vars qw (@ISA $VERSION);
 
-$VERSION = '0.50';
+$VERSION = '0.51';
 
 @ISA = ('IO::Socket::UNIX');
 
@@ -88,7 +88,13 @@ sub new
 	${*$self}{PGUSER} = $args{User} || $ENV{PGUSER} || ${*$self}{DBNAME};
 	${*$self}{PGPASS} = $args{Password} || $ENV{PGPASS} || '';
 	$self->blocking(0);
-	$self->handshake;
+	eval { $self->handshake; };
+	if ($@) 
+	  { 
+	    $self->close;
+	    warn $@;
+	    return undef;
+	  }
 	$self->setenv();
       }
     $self;
@@ -112,7 +118,8 @@ sub handshake
 	my $salt = 0;
 	if ($areq == AUTH_REQ_CRYPT)
 	  {
-	    next if $self->pqGetnchar(conn->salt, sizeof(conn->salt));
+	    next if $self->pqGetnchar($salt, 4);
+	    # FIXME, this does not work, I think!
 	  }
 	$self->sendauth($areq);
 	$self->flush;
@@ -314,9 +321,7 @@ sub getError
   {
     my $self = shift;
     my $note = $self->gets;
-    $self->trace("$note");
-    $self->errmsg($note);
-    $note;
+    die $note;
   }
 
 sub getCursor

@@ -6,14 +6,14 @@ package PgSQL::Cursor;
 # the GNU General Public License version 2 (or later)
 # or the Artistic License, as specified in the Perl README file.
 #
-# $Id: Cursor.pm,v 1.4 1998/08/15 12:31:08 goran Exp $
+# $Id: Cursor.pm,v 1.5 1998/08/15 15:09:49 goran Exp $
 
 
 use strict;
 
 use vars qw($VERSION);
 
-$VERSION = '0.50';
+$VERSION = '0.51';
 
 
 sub new 

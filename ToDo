@@ -1,0 +1,15 @@
+
+ToDo in PgSQL module:
+
+* read/write BLOBs
+  se text file BLOB.txt
+* handle quoting
+* handle bool in perlish way
+* write documentation
+
+
+
+
+
+
+
